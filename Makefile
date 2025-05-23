@@ -2,7 +2,7 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror
 
-SRC = main.cpp Debugger.cpp
+SRC = main.cpp Debugger.cpp Breakpoint.cpp
 OBJ = $(SRC:.cpp=.o)
 TARGET = nullDBG
 
