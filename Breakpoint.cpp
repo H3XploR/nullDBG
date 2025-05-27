@@ -9,7 +9,14 @@
 #include <cstdio>
 
 Breakpoint::Breakpoint(pid_t pid, std::intptr_t addr)
-    : m_pid(pid), m_addr(addr) {}
+    : m_pid(pid), m_addr(addr) {
+	std::cout << "Creating breakpoint at address: " << std::hex << addr << std::dec << " for process: " << pid << std::endl;
+    if (addr % 4 != 0) {
+	throw std::runtime_error("[!] Breakpoint address is not 4-byte aligned (AArch64 requires alignment).");
+    }
+    m_enabled = false;
+    m_saved_data = 0;
+}
 
 void Breakpoint::enable() {
     if (m_addr % 4 != 0) {
@@ -61,5 +68,10 @@ std::intptr_t Breakpoint::get_address() const {
 
 bool Breakpoint::is_enabled() const {
     return m_enabled;
+}
+
+std::ostream& operator<<(std::ostream& os, const Breakpoint& bp) {
+	os << "pid: " << bp.m_pid << "Breakpoint at " << std::hex << bp.m_addr << (bp.m_enabled ? " (enabled)" : " (disabled)");
+	return os;
 }
 
