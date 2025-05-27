@@ -1,4 +1,3 @@
-// Debugger.cpp
 #include "Debugger.hpp"
 #include <iostream>
 #include <sys/ptrace.h>
