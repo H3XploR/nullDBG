@@ -7,6 +7,9 @@
 #include <sys/uio.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <bitset>
+#include <stdint.h>
+#include <stdio.h>
 
 Debugger::Debugger(const std::string &prog_name) : program_name(prog_name) {
   std::cout << "[+] Debugger initialized for program: " << program_name << "\n";
@@ -76,6 +79,17 @@ uint32_t Debugger::get_opcode(void){
     perror("ptrace(PTRACE_GETREGSET)");
     return 0;
   }
+  std::cout << "[+] Current PC(HEX): " << std::hex << regs.pc << std::dec << "\n";
+  std::cout << "[+] Current PC(BIN): ";
+  std::cout << "[+] regs.pc (big-endian, 8-bit chunks): ";
+    for (int i = 56; i >= 0; i -= 8) {
+        uint8_t byte = (regs.pc >> i) & 0xFF;
+        for (int j = 7; j >= 0; --j) {
+            std::cout << ((byte >> j) & 1);
+        }
+        std::cout << " ";
+    }
+    std::cout << std::endl;
   return ptrace(PTRACE_PEEKTEXT, child_pid, regs.pc, nullptr);
 }
 
